@@ -1,4 +1,5 @@
 import Todo from '../models/todo.models.js'
+import mongoose from 'mongoose'
 
 // Create TODO - POST Api call
 export const createTodo = async (req, res) => {
@@ -81,6 +82,45 @@ export const getTodos = async (req, res) => {
     }
     catch (error) {
        return res.status(500).json( {
+            success: false,
+            message: "Internal Server Error",
+            error: error.message
+        } )
+    }
+}
+
+// Get Todos by id
+export const getTodoById = async ( req, res ) => {
+    try {
+        const { id } = req.params
+
+        // Validate ID based on mongoose
+        if(!mongoose.Types.ObjectId.isValid(id)){
+            return res.status(400).json({
+                success: false,
+                message: "Invalid Todo Id"
+            })
+        }
+
+        const todo = await Todo.findById(id)
+
+        // if todos not found
+        if(!todo) {
+            return res.status(400).json({
+                success: false,
+                message: "todo not found"
+            })
+        }
+
+        // if todo found
+        return res.status(200).json({
+            success: true,
+            message: "todo Fetched successfully",
+            data: todo
+        })
+    }
+    catch(error) {
+        return res.status(500).json( {
             success: false,
             message: "Internal Server Error",
             error: error.message

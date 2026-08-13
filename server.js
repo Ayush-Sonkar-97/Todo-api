@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 
 import { connectDB } from './config/db.js'
 import todoroutes from './routes/todo.routes.js'
+import { errorHandler } from './middlewares/error.middleware.js'
 
 
 dotenv.config()
@@ -19,6 +20,9 @@ connectDB()
 
 // Routes
 app.use('/api/todos', todoroutes)
+
+// Error Handling middleware
+app.use(errorHandler)
  
 // Test route
 // app.get('/' , (req, res) => {
